@@ -1,0 +1,10 @@
+# Python bytecode / cache
+__pycache__/
+*.pyc
+
+# Virtual environment folders
+containers/
+
+# IDE / editor configs
+.idea/
+workshop01/workshop01.iml
