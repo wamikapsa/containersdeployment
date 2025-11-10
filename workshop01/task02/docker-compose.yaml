@@ -1,0 +1,38 @@
+# to run: docker compose up
+# to stop: docker compose down
+
+networks:
+  mynet:
+
+volumes:
+  data-vol:
+
+services:
+  # docker run -d --mount type=volume,src=data-vol,dst=/var/lib/mysql --network=mynet
+  mydb:
+    image: stackupiss/northwind-db:v1
+    volumes:
+      - type: volume
+        source: data-vol
+        target: /var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: changeit
+    networks:
+      - mynet
+
+  # docker run -d -e DB_HOST=mydb -e DB_USER=root -e DB_PASSWORD=changeit -p 8080:3000 --network=mynet
+  myapp:
+    image: stackupiss/northwind-app:v1
+    build:
+      context: app
+    environment:
+      - DB_HOST=mydb
+      - DB_USER=root
+      - DB_PASSWORD=changeit
+    ports:
+      - "8080:3000"
+    networks:
+      - mynet
+    depends_on:
+      mydb:
+        condition: service_started
