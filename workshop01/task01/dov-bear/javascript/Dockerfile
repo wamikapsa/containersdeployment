@@ -1,4 +1,4 @@
-FROM harbor.pks.dsu.ppt.pcf.psa/concourse-stowage/cypress-git-zip-node20.18-chrome130:v1
+node:24
 
 # mkdir /app, cd /app
 WORKDIR /app

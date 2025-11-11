@@ -1,0 +1,60 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dov-deploy
+  namespace: myns
+  labels:
+    app: dov
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: dov-bear
+      dept: eng
+  template:
+    metadata:
+      name: dov-bear
+      labels:
+        app: dov-bear
+        dept: eng
+      namespace: myns
+    spec:
+      containers:
+        - name: dov-bear-container
+          image: chukmunnlee/dov-bear:v1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PORT
+              value: '5000'
+            - name: INSTANCE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: INSTANCE_HASH
+              valueFrom:
+                secretKeyRef:
+                  name: dov-secret
+                  key: INSTANCE_NAME
+#                configMapKeyRef:
+#                  key: INSTANCE_NAME
+#                  name: dov-cm
+          ports:
+            - containerPort: 5000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dov-svc
+  namespace: myns
+  labels:
+    app: dov
+spec:
+  type: LoadBalancer
+  selector:
+    app: dov-bear
+    dept: eng
+  ports:
+    - port: 80
+      targetPort: 5000

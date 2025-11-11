@@ -1,0 +1,54 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cadang-ns
+  labels:
+    dept: eng
+    app: web
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cadang-deploy
+  namespace: cadang-ns
+  labels:
+    app: caddy-dov
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: caddy-dov-bear
+      dept: eng
+  template:
+    metadata:
+      name: caddy-dov-bear
+      labels:
+        app: caddy-dov-bear
+        dept: eng
+      namespace: myns
+    spec:
+      containers:
+        - name: caddy-dov-bear-container
+          image: chukmunnlee/cfdsa-workshop02:v1.5
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cadang-svc
+  namespace: cadang-ns
+  labels:
+    app: caddy-dov
+spec:
+  type: LoadBalancer
+  selector:
+    app: caddy-dov-bear
+    dept: eng
+  ports:
+    - port: 80
+      targetPort: 3000

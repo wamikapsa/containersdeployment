@@ -1,0 +1,21 @@
+Assume that Node is installed
+
+Install Angular CLI
+  npm install -g @angular/cli
+
+Install application's dependencies
+  npm install
+
+Build the application, the build artifacts will be in ./dist/angular/browser directory
+  ng build
+
+The files and directories required to build Angular are
+- angular.json
+- package.json
+- package-lock.json
+- tsconfig.app.json
+- tsconfig.json
+- tsconfig.spec.json
+- public
+- src
+
