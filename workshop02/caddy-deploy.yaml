@@ -51,7 +51,7 @@ metadata:
   labels:
     app: caddy-dov
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     app: caddy-dov-bear
     name: caddy-dov-bear-po
