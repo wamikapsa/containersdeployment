@@ -17,24 +17,30 @@ metadata:
     app: caddy-dov
 spec:
   replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 30%
+      maxSurge: 30%
   selector:
     matchLabels:
+      name: caddy-dov-bear-po
       app: caddy-dov-bear
       dept: eng
   template:
     metadata:
-      name: caddy-dov-bear
       labels:
+        name: caddy-dov-bear-po
         app: caddy-dov-bear
         dept: eng
-      namespace: myns
     spec:
       containers:
         - name: caddy-dov-bear-container
           image: chukmunnlee/cfdsa-workshop02:v1.5
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 3000
+            - name: web-port
+              containerPort: 3000
 
 ---
 apiVersion: v1
@@ -45,10 +51,11 @@ metadata:
   labels:
     app: caddy-dov
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: caddy-dov-bear
+    name: caddy-dov-bear-po
     dept: eng
   ports:
     - port: 80
-      targetPort: 3000
+      targetPort: web-port

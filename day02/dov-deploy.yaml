@@ -51,7 +51,7 @@ metadata:
   labels:
     app: dov
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: dov-bear
     dept: eng
