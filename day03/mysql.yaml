@@ -1,0 +1,46 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc
+  namespace: default
+spec:
+  # how large the volume
+  resources:
+    requests:
+      storage: 1Gi
+  accessModes:
+    - ReadWriteOncePod
+  storageClassName: do-block-storage
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deploy
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      volumes:
+        - name: data-vol
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+      containers:
+        - name: mysql-container
+          image: mysql:8
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: changeit
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: data-vol
+              mountPath: /var/lib/mysql

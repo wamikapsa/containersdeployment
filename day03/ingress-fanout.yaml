@@ -1,0 +1,30 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-ing
+  namespace: api
+  annotations:
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/user-regex: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: api-167.99.28.222.sslip.io
+      http:
+        paths:
+          - path: /v1(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: api-svc
+                port:
+                  number: 3000
+          - path: /v2(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: api-v2-svc
+                port:
+                  number: 3000

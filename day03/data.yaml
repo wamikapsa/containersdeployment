@@ -1,0 +1,21 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: data-vol
+  namespace: default
+data:
+  index.html: |
+      <body>
+        <h1>Success! The Nginx server is running.</h1>
+        <h2>This is my deployment. </h2>
+      </body>
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secret-vol
+  namespace: default
+data:
+  token: aHVzaCBodXNo

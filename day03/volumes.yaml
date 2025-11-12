@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  namespace: default
+spec:
+  volumes:
+    - name: tmp-vol
+#      hostPath:
+#        path: /opt/tmp
+      emptyDir: {}
+    - name: html-vol
+      configMap:
+        name: data-vol
+    - name: secret-vol
+      secret:
+        secretName: secret-vol
+  containers:
+    - name: nginx
+      image: nginx
+      ports:
+        - containerPort: 80
+      volumeMounts:
+        - name: tmp-vol
+          mountPath: /var/data
+        - name: html-vol
+          mountPath: /usr/share/nginx/html
+        - name: secret-vol
+          mountPath: /var/secret
