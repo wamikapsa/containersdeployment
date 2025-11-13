@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  minio1:
+    image: minio/minio
+    hostname: minio1
+    container_name: minio1
+    ports:
+      - "9001:9000"
+      - "9011:9001"
+    volumes:
+      - minio1-data:/data
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    command: server --console-address ":9001" --address ":9000" http://minio{1...4}/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - minio-cluster
+
+  minio2:
+    image: minio/minio
+    hostname: minio2
+    container_name: minio2
+    ports:
+      - "9002:9000"
+      - "9012:9001"
+    volumes:
+      - minio2-data:/data
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    command: server --console-address ":9001" --address ":9000" http://minio{1...4}/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - minio-cluster
+
+  minio3:
+    image: minio/minio
+    hostname: minio3
+    container_name: minio3
+    ports:
+      - "9003:9000"
+      - "9013:9001"
+    volumes:
+      - minio4-data:/data
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    command: server --console-address ":9001" --address ":9000" http://minio{1...4}/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - minio-cluster
+
+  minio4:
+    image: minio/minio
+    hostname: minio4
+    container_name: minio4
+    ports:
+      - "9004:9000"
+      - "9014:9001"
+    volumes:
+      - minio3-data:/data
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    command: server --console-address ":9001" --address ":9000" http://minio{1...4}/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - minio-cluster
+
+volumes:
+  minio1-data:
+  minio2-data:
+  minio3-data:
+
+networks:
+  minio-cluster:
+    driver: bridge
