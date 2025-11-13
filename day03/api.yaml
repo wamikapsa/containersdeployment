@@ -35,6 +35,13 @@ spec:
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3000
+        resources:
+          requests:
+            memory: 64Mi
+            cpu: 64m
+          limits:
+            memory: 64Mi
+            cpu: 64m
 
 ---
 apiVersion: v1
@@ -55,3 +62,29 @@ spec:
   - port: 3000
     targetPort: 3000
 
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: api-hpa
+  namespace: api
+spec:
+  minReplicas: 1
+  maxReplicas: 6
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: api-deploy
+  metrics:
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 50
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50

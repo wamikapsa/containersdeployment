@@ -34,6 +34,13 @@ spec:
                 name: bgg-cm
             - secretRef:
                 name: bgg-secret
+          resources:
+            requests:
+              cpu: 64m
+              memory: 96Mi
+            limits:
+              cpu: 64m
+              memory: 96Mi
           readinessProbe:
             exec:
               command:
@@ -66,4 +73,31 @@ spec:
   ports:
     - port: 5000
       targetPort: 5000
+      
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: bggapp-hpa
+  namespace: bggns
+spec:
+  minReplicas: 1
+  maxReplicas: 6
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: bggapp-deploy
+  metrics:
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 50
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
 

@@ -1,0 +1,7 @@
+- op: add
+  path: /spec/template/spec/containers/0/resources
+  value:
+    requests:
+      memory: "64Mi"
+    limits:
+      memory: "64Mi"
